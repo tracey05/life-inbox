@@ -16,6 +16,9 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * 自定义的规则提取器，也就是先跑整个框架跑通，后面再接入LLM
+ */
 public class HeuristicLifeItemExtractor implements LifeItemExtractor {
     private static final Pattern MONTH_DAY = Pattern.compile(
             "(?i)\\b(January|February|March|April|May|June|July|August|September|October|November|December)\\s+(\\d{1,2})(?:\\s*(?:-|–|to)\\s*(\\d{1,2}))?(?:,?\\s+(\\d{4}))?");
