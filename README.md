@@ -23,7 +23,15 @@ The first version keeps the core product boundary explicit:
 The service intentionally does not auto-confirm extracted facts. Candidates must be confirmed or ignored.
 产品不会自动存储大模型提取的结构化信息，需要用户手动确认或者忽略。
 
-第一版暂时没有实现前端页面，需要在窗口上手动执行命令， 以下是项目运行的命令列表：
+### 项目第二版
+完成对接LLM部分的功能，新增如下：
+- openAi的配置文件，用于统一管理
+- 新增openAi对应的llm provider,用来调用openAi api
+- 实现大模型提取器
+- 新增llm结构化输出schema
+- 将旧有的规则提取器设置为默认extractor,如果没有配置app key，则默认使用规则提取器
+
+暂时没有实现前端页面，需要在窗口上手动执行命令， 以下是项目运行的命令列表：
 ## Run
 
 ```bash
@@ -32,6 +40,19 @@ javac -d out $(find src/main/java -name '*.java') # 编译
 java -cp out com.lifeinbox.LifeInboxServer # 运行
 ```
 The server listens on `http://localhost:8080` by default.
+
+By default, the service uses the local `HeuristicLifeItemExtractor` so it can run without network access.
+
+To use the real OpenAI-backed extractor:
+
+```bash
+export OPENAI_API_KEY="your_api_key"
+export OPENAI_MODEL="gpt-4.1-mini"
+export LIFE_INBOX_TIMEZONE="Asia/Shanghai"
+java -cp out com.lifeinbox.LifeInboxServer
+```
+
+`OPENAI_MODEL` and `LIFE_INBOX_TIMEZONE` are optional. `OPENAI_API_KEY` is the switch that enables the OpenAI extractor.
 
 ## API
 
@@ -59,6 +80,6 @@ curl -s -X POST http://localhost:8080/api/inbox/entries/{entryId}/candidates/{ca
 
 ## Notes
 
-This repository currently uses a conservative rule-based extractor so the HTTP and domain flow can be tested without a network dependency. The `llm` package already defines the provider/extractor boundary for replacing it with a real model-backed implementation.
+This repository keeps the conservative rule-based extractor as a fallback. When `OPENAI_API_KEY` is set, the server uses the OpenAI-backed extractor through the `LifeItemExtractor` interface.
 
 Dates without an explicit year are treated as missing information instead of being guessed.
