@@ -30,6 +30,7 @@ public class OpenAiResponsesLlmProvider implements LlmProvider {
             String responseBody = post(JsonUtil.stringify(requestBody(prompt)));
             return extractOutputText(JsonUtil.parseObject(responseBody));
         } catch (IOException e) {
+            System.err.println(e.getMessage());
             throw new IllegalStateException("Failed to call OpenAI Responses API", e);
         }
     }
